@@ -157,6 +157,48 @@ func TestMatch(t *testing.T) {
 	assert(t, len(hits) == 0)
 }
 
+func TestContains(t *testing.T) {
+	m := NewStringMatcher([]string{"Mozilla", "Mazillaž", "Mac", "Macintosh", "Safari", "Sausage"})
+	result := m.Contains([]byte("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36"))
+	assert(t, result == true)
+
+	result = m.Contains([]byte("Mozilla/5.0 (Mac; Intel Mac OS X 10_7_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36"))
+	assert(t, result == true)
+
+	result = m.Contains([]byte("Mozilla/5.0 (Moc; Intel Computer OS X 10_7_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36"))
+	assert(t, result == true)
+
+	result = m.Contains([]byte("Mozilla/5.0 (Moc; Intel Computer OS X 10_7_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Sofari/537.36"))
+	assert(t, result == true)
+
+	result = m.Contains([]byte("Mazillaž/5.0 (Moc; Intel Computer OS X 10_7_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Sofari/537.36"))
+	assert(t, result == true)
+
+	result = m.Contains([]byte("Mazilla/5.0 (Moc; Intel Computer OS X 10_7_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Sofari/537.36"))
+	assert(t, result == false)
+}
+
+func TestContainsStr(t *testing.T) {
+	m := NewStringMatcher([]string{"Mozilla", "Mazillaž", "Mac", "Macintosh", "Safari", "Sausage"})
+	result := m.ContainsStr("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36")
+	assert(t, result == true)
+
+	result = m.ContainsStr("Mozilla/5.0 (Mac; Intel Mac OS X 10_7_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36")
+	assert(t, result == true)
+
+	result = m.ContainsStr("Mozilla/5.0 (Moc; Intel Computer OS X 10_7_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36")
+	assert(t, result == true)
+
+	result = m.ContainsStr("Mozilla/5.0 (Moc; Intel Computer OS X 10_7_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Sofari/537.36")
+	assert(t, result == true)
+
+	result = m.ContainsStr("Mazillaž/5.0 (Moc; Intel Computer OS X 10_7_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Sofari/537.36")
+	assert(t, result == true)
+
+	result = m.ContainsStr("Mazilla/5.0 (Moc; Intel Computer OS X 10_7_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Sofari/537.36")
+	assert(t, result == false)
+}
+
 var bytes = []byte("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36")
 var sbytes = string(bytes)
 var dictionary = []string{"Mozilla", "Mac", "Macintosh", "Safari", "Sausage"}

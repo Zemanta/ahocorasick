@@ -11,6 +11,7 @@ package ahocorasick
 
 import (
 	"container/list"
+	"unicode/utf8"
 )
 
 // A node in the trie structure used to implement Aho-Corasick
@@ -277,6 +278,36 @@ func (m *Matcher) Contains(in []byte) bool {
 
 			for !f.suffix.root {
 				return true
+			}
+		}
+	}
+	return false
+}
+
+// The same as Contains but takes in a string as a parameter.
+func (m *Matcher) ContainsStr(in string) bool {
+	n := m.root
+	b := make([]byte, utf8.UTFMax)
+	for _, r := range in {
+		count := utf8.EncodeRune(b, r)
+
+		for i := 0; i < count; i++ {
+			c := int(b[i])
+			if !n.root && n.child[c] == nil {
+				n = n.fails[c]
+			}
+
+			if n.child[c] != nil {
+				f := n.child[c]
+				n = f
+
+				if f.output {
+					return true
+				}
+
+				for !f.suffix.root {
+					return true
+				}
 			}
 		}
 	}
